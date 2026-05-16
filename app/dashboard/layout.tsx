@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <ArchiveRestore size={23} />
           </span>
           <span>
-            <strong className="block text-lg text-slate-950">إدارة الوثائق</strong>
+            <strong className="block text-lg text-slate-950">إدارة الأرشيف الإلكترونى</strong>
             <small className="font-bold text-slate-500">الوارد والصادر</small>
           </span>
         </Link>

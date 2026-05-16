@@ -19,7 +19,8 @@ function text(formData: FormData, key: string) {
 }
 
 function list(formData: FormData, key: string) {
-  return text(formData, key)
+  return Array.from(new Set(formData.getAll(key).map((item) => String(item).trim()).filter(Boolean)))
+    .join(",")
     .split(/[،,\n]/)
     .map((item) => item.trim())
     .filter(Boolean);

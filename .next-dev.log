@@ -10,6 +10,9 @@
      · serverActions
 
  ✓ Starting...
- ✓ Ready in 3.2s
+ ✓ Ready in 3.3s
  ○ Compiling /login ...
- ✓ Compiled /login in 6.3s (798 modules)
+ ✓ Compiled /login in 7.1s (798 modules)
+ GET /login 200 in 7991ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 4.3s (879 modules)

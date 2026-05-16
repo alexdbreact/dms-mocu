@@ -7,6 +7,7 @@ import {
   updateDocumentAction,
   type DocumentState
 } from "@/app/actions/documents";
+import { IncomingEntitiesField } from "@/components/IncomingEntitiesField";
 
 type DocumentType = "incoming" | "outgoing";
 
@@ -32,6 +33,7 @@ type Props = {
   type: DocumentType;
   document?: FormDocument;
   subFileNames?: string[];
+  incomingEntityNames?: string[];
 };
 
 const initialState: DocumentState = {};
@@ -44,7 +46,12 @@ function formatDate(value?: string) {
   return value.slice(0, 10);
 }
 
-export function DocumentForm({ type, document, subFileNames = [] }: Props) {
+export function DocumentForm({
+  type,
+  document,
+  subFileNames = [],
+  incomingEntityNames = []
+}: Props) {
   const action = document?._id
     ? updateDocumentAction.bind(null, type, document._id)
     : createDocumentAction.bind(null, type);
@@ -91,14 +98,10 @@ export function DocumentForm({ type, document, subFileNames = [] }: Props) {
             الجهة الوارد منها
             <input name="incomingFrom" defaultValue={document?.incomingFrom || ""} />
           </label>
-          <label>
-            الجهات
-            <input
-              name="incomingEntities"
-              placeholder="افصل بين الجهات بفاصلة"
-              defaultValue={document?.incomingEntities?.join("، ") || ""}
-            />
-          </label>
+          <IncomingEntitiesField
+            availableEntities={incomingEntityNames}
+            selectedEntities={document?.incomingEntities || []}
+          />
           <label className="md:col-span-2">
             التأشيرة
             <textarea name="instruction" defaultValue={document?.instruction || ""} />

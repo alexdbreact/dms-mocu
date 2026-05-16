@@ -73,7 +73,12 @@ function serialize(doc: LeanDocumentRecord): PlainDocument {
 type DocumentFilters = {
   query?: string;
   subFileName?: string;
+  sort?: DocumentSort;
+  direction?: SortDirection;
 };
+
+export type DocumentSort = "date" | "serial" | "number" | "id";
+export type SortDirection = "asc" | "desc";
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -85,6 +90,8 @@ export async function getDocuments(type: "incoming" | "outgoing", filters: Docum
     const filter: Record<string, unknown> = { type };
     const query = filters.query?.trim();
     const subFileName = filters.subFileName?.trim();
+    const sort = filters.sort || "date";
+    const direction: 1 | -1 = filters.direction === "asc" ? 1 : -1;
 
     if (query) {
       filter.$or = [
@@ -100,7 +107,13 @@ export async function getDocuments(type: "incoming" | "outgoing", filters: Docum
       filter.subFileName = new RegExp(`^${escapeRegExp(subFileName)}$`, "i");
     }
 
-    const docs = await DocumentModel.find(filter).sort({ documentDate: -1, serial: -1 }).limit(100).lean();
+    const sortMap: Record<DocumentSort, Record<string, 1 | -1>> = {
+      date: { documentDate: direction, serial: -1 },
+      serial: { serial: direction },
+      number: { referenceNumber: direction },
+      id: { _id: direction }
+    };
+    const docs = await DocumentModel.find(filter).sort(sortMap[sort]).limit(100).lean();
     return docs.map(serialize);
   } catch {
     return [];
@@ -141,6 +154,29 @@ export async function getSubFileGroups(type: "incoming" | "outgoing"): Promise<S
       name: group._id,
       count: group.count
     }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getIncomingEntityNames(): Promise<string[]> {
+  try {
+    await connectToDatabase();
+    const documents = await DocumentModel.find({
+      type: "incoming",
+      incomingEntities: { $exists: true, $ne: [] }
+    })
+      .select({ incomingEntities: 1, _id: 0 })
+      .lean<{ incomingEntities?: string[] }[]>();
+
+    return Array.from(
+      new Set(
+        documents
+          .flatMap((document) => document.incomingEntities || [])
+          .map((entity) => entity.trim())
+          .filter(Boolean)
+      )
+    ).sort((first, second) => first.localeCompare(second, "ar"));
   } catch {
     return [];
   }

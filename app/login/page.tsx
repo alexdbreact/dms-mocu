@@ -20,8 +20,8 @@ export default async function LoginPage() {
           <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-lg bg-gradient-to-br from-[#0f766e] to-[#2563eb] text-white shadow-xl shadow-blue-900/20">
             <FileArchive size={28} />
           </div>
-          <h1 className="text-3xl font-extrabold">نظام إدارة الوثائق</h1>
-          <p className="mt-2 font-semibold text-slate-500">أرشفة الوارد والصادر الرسمي</p>
+          <h1 className="text-3xl font-extrabold">نظام إدارة الأرشيف الإلكترونى</h1>
+          <p className="mt-2 font-semibold text-slate-500">أرشفة الوارد والصادر </p>
         </div>
         <LoginForm />
         <div className="mt-4 rounded-lg border border-slate-200 bg-white/80 p-4 text-sm font-semibold text-slate-500 shadow-sm">
